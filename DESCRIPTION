@@ -11,7 +11,7 @@ Authors@R: c(person("Sam", "Watson", email = "S.I.Watson@bham.ac.uk",
             person("Mike", "Powell", role = c("aut")))
 Maintainer: Yi Pan <ypan1988@gmail.com>
 Description: Perform derivative-free optimization algorithms in R using C++.
-    A wrapper interface is provided to call C function of the bobyqa implementation
+    A wrapper interface is provided to call C function of the 'bobyqa' implementation
     (See<https://github.com/emmt/Algorithms/tree/master/bobyqa>).
 License: GPL (>= 2)
 Encoding: UTF-8

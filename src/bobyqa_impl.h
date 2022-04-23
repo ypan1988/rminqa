@@ -24,8 +24,10 @@
 #include <math.h>
 
 //#include "bobyqa.h"
+#include "R_ext/Print.h"
 
-#define OUTPUT       stdout
+//#define OUTPUT       stdout
+#define OUTPUT       NULL
 
 /* Macros to deal with single/double precision. */
 #undef REAL
@@ -202,9 +204,12 @@ bobyqa_test(void)
       if (jcase == 2) {
         npt = 2*n + 1;
       }
-      fprintf(OUTPUT,
-              "\n\n     2D output with M =%4ld,  N =%4ld  and  NPT =%4ld\n",
+      // fprintf(OUTPUT,
+      //         "\n\n     2D output with M =%4ld,  N =%4ld  and  NPT =%4ld\n",
+      //         (long)m, (long)n, (long)npt);
+      Rprintf("\n\n     2D output with M =%4ld,  N =%4ld  and  NPT =%4ld\n",
               (long)m, (long)n, (long)npt);
+
       LOOP(j,m) {
         temp = ((REAL)j)*q;
         x[2*j - 2] = COS(temp);
@@ -875,8 +880,11 @@ bobyqb(const INTEGER n, const INTEGER npt,
   ++nf;
   f = objfun(n, &x[1], data);
   if (iprint == 3) {
-    fprintf(OUTPUT,
-            "    Function number%6ld    F =%18.10E"
+    // fprintf(OUTPUT,
+    //         "    Function number%6ld    F =%18.10E"
+    //         "    The corresponding X is:\n",
+    //         (long)nf, (double)f);
+    Rprintf("    Function number%6ld    F =%18.10E"
             "    The corresponding X is:\n",
             (long)nf, (double)f);
     print_x(OUTPUT, n, &x[1], NULL);
@@ -1196,14 +1204,21 @@ bobyqb(const INTEGER n, const INTEGER npt,
     delta = MAX(delta,rho);
     if (iprint >= 2) {
       if (iprint >= 3) {
-        fprintf(OUTPUT, "\n");
+        // fprintf(OUTPUT, "\n");
+        Rprintf("\n");
       }
-      fprintf(OUTPUT, "\n"
-              "    New RHO =%11.4E "
-              "    Number of function values =%6ld\n"
-              "    Least value of F =%23.15E     "
-              "    The corresponding X is:\n",
-              (double)rho, (long)nf, (double)fval[kopt]);
+      // fprintf(OUTPUT, "\n"
+      //         "    New RHO =%11.4E "
+      //         "    Number of function values =%6ld\n"
+      //         "    Least value of F =%23.15E     "
+      //         "    The corresponding X is:\n",
+      //         (double)rho, (long)nf, (double)fval[kopt]);
+      Rprintf(  "\n"
+                "    New RHO =%11.4E "
+                "    Number of function values =%6ld\n"
+                "    Least value of F =%23.15E     "
+                "    The corresponding X is:\n",
+                (double)rho, (long)nf, (double)fval[kopt]);
       print_x(OUTPUT, n, &xbase[1], &xopt[1]);
     }
     ntrits = 0;
@@ -1232,12 +1247,18 @@ bobyqb(const INTEGER n, const INTEGER npt,
     f = fval[kopt];
   }
   if (iprint >= 1) {
-    fprintf(OUTPUT, "\n"
-            "    At the return from BOBYQA "
-            "    Number of function values =%6ld\n"
-            "    Least value of F =%23.15E     "
-            "    The corresponding X is:\n",
-            (long)nf, (double)f);
+    // fprintf(OUTPUT, "\n"
+    //         "    At the return from BOBYQA "
+    //         "    Number of function values =%6ld\n"
+    //         "    Least value of F =%23.15E     "
+    //         "    The corresponding X is:\n",
+    //         (long)nf, (double)f);
+    Rprintf(  "\n"
+              "    At the return from BOBYQA "
+              "    Number of function values =%6ld\n"
+              "    Least value of F =%23.15E     "
+              "    The corresponding X is:\n",
+              (long)nf, (double)f);
     print_x(OUTPUT, n, &x[1], NULL);
   }
 
@@ -1772,12 +1793,17 @@ prelim(const INTEGER n, const INTEGER npt,
     }
     f = objfun(n, &x[1], data);
     if (iprint == 3) {
-      fprintf(OUTPUT, "Function number%6ld    F = %.18G"
-              "    The corresponding X is: ", (long)*nf, (double)f);
+      // fprintf(OUTPUT, "Function number%6ld    F = %.18G"
+      //         "    The corresponding X is: ", (long)*nf, (double)f);
+      Rprintf(  "Function number%6ld    F = %.18G"
+                "    The corresponding X is: ", (long)*nf, (double)f);
+
       LOOP(i,n) {
-        fprintf(OUTPUT, " %15.6E", x[i]);
+        // fprintf(OUTPUT, " %15.6E", x[i]);
+        Rprintf(" %15.6E", x[i]);
       }
-      fprintf(OUTPUT, "\n");
+      // fprintf(OUTPUT, "\n");
+      Rprintf("\n");
     }
     fval[*nf] = f;
     if (*nf == 1) {
@@ -2272,11 +2298,16 @@ rescue(const INTEGER n, const INTEGER npt,
     ++(*nf);
     f = objfun(n, &w[1], data);
     if (iprint == 3) {
-      fprintf(OUTPUT,
-              "    Function number%6ld"
+      // fprintf(OUTPUT,
+      //         "    Function number%6ld"
+      //         "    F =%18.10E"
+      //         "    The corresponding X is:\n",
+      //         (long)*nf, (double)f);
+      Rprintf("    Function number%6ld"
               "    F =%18.10E"
               "    The corresponding X is:\n",
               (long)*nf, (double)f);
+
       print_x(OUTPUT, n, &w[1], NULL);
     }
     fval[kpt] = f;
@@ -2900,7 +2931,8 @@ update(const INTEGER n, const INTEGER npt, REAL* bmat,
 static void
 print_error(const char* reason)
 {
-  fprintf(stderr, "\n    Return from BOBYQA because %s.\n", reason);
+  // fprintf(stderr, "\n    Return from BOBYQA because %s.\n", reason);
+  REprintf("\n    Return from BOBYQA because %s.\n", reason);
 }
 
 static void
@@ -2909,16 +2941,19 @@ print_x(FILE* output, const INTEGER n, const REAL x[], const REAL dx[])
   INTEGER i, k;
 
   if (output == NULL) {
-    output = stdout;
+    // output = stdout;
   }
   for (i = 0; i < n; ++i) {
     k = i%5;
     if (k == 0) {
-      fprintf(output, "  ");
+      //fprintf(output, "  ");
+      Rprintf("  ");
     }
-    fprintf(output, "%15.6E", (dx == NULL ? x[i] : x[i] + dx[i]));
+    //fprintf(output, "%15.6E", (dx == NULL ? x[i] : x[i] + dx[i]));
+    Rprintf("%15.6E", (dx == NULL ? x[i] : x[i] + dx[i]));
     if (i == n - 1 || k == 4) {
-      fprintf(output, "\n");
+      //fprintf(output, "\n");
+      Rprintf("\n");
     }
   }
 }
