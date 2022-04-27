@@ -4,6 +4,7 @@
 #'@title Example 1a: Minimize Rosenbrock function using bobyqa
 #'@description Minimize Rosenbrock function using bobyqa and
 #'             expect a normal exit from bobyqa.
+#'@return No return value, called for side effects.
 #'@examples
 #'fr <- function(x) {   ## Rosenbrock Banana function
 #'  x1 <- x[1]
@@ -24,6 +25,7 @@ bobyqa_rosen_x1 <- function() {
 #'@title Example 1b: Minimize Rosenbrock function using bobyqa
 #'@description Minimize Rosenbrock function using bobyqa and
 #'             expect a normal exit from bobyqa.
+#'@return No return value, called for side effects.
 #'@examples
 #'fr <- function(x) {   ## Rosenbrock Banana function
 #'  x1 <- x[1]

@@ -6,6 +6,9 @@
 \usage{
 bobyqa_rosen_x1e()
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 Minimize Rosenbrock function using bobyqa and
             expect a normal exit from bobyqa.
