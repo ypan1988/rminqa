@@ -89,7 +89,7 @@ inline void Rbobyqa<Derived>::minimize(Derived &func, arma::vec &par) {
 
   if (!control.maxfun) control.maxfun = 10000;
   std::vector<double> w;
-  w.reserve((control.npt + 5) * (control.npt + npar) + (3 * npar * (npar + 5))/2);
+  w.resize((control.npt + 5) * (control.npt + npar) + (3 * npar * (npar + 5))/2);
 
   int res = bobyqa(npar, control.npt, minqa_objfun, &func, par.memptr(), lower_.memptr(), upper_.memptr(),
                    control.rhobeg, control.rhoend, control.iprint, control.maxfun, w.data());
