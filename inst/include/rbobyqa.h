@@ -1,11 +1,9 @@
-
 #ifndef RBOBYQA_H_
 #define RBOBYQA_H_
 
 #include <algorithm>
 #include <vector>
-
-#include <RcppArmadillo.h>
+#include<Rcpp.h>
 
 #include "bobyqa.h"
 #include "functor.h"
@@ -15,15 +13,15 @@ namespace rminqa {
 template<typename Derived>
 class Rbobyqa {
 public:
-  arma::vec lower() const { return lower_; }
-  arma::vec upper() const { return upper_; }
-  arma::vec par() const { return par_; }
+  std::vector<double> lower() const { return lower_; }
+  std::vector<double> upper() const { return upper_; }
+  std::vector<double> par() const { return par_; }
   double fval() const { return fval_; }
   int feval() const { return feval_; }
   std::string msg() const { return msg_; }
 private:
-  arma::vec lower_, upper_;
-  arma::vec par_;
+  std::vector<double> lower_, upper_;
+  std::vector<double> par_;
 
   double fval_;
   int feval_;
@@ -64,41 +62,40 @@ public:
 
   Rbobyqa() {}
 
-  void set_lower(const arma::vec &lower) { lower_ = lower; }
-  void set_upper(const arma::vec &upper) { upper_ = upper; }
-  void minimize(Derived &func, arma::vec &par);
+  void set_lower(const std::vector<double> &lower) { lower_ = lower; }
+  void set_upper(const std::vector<double> &upper) { upper_ = upper; }
+  void minimize(Derived &func, std::vector<double> &par) {
+    func.feval = 0;
+    
+    std::size_t npar = par.size();
+    if (!control.npt) control.npt = std::min(npar + 2, (npar+2)*(npar+1)/2); //this caused an error for 1 or two parameters, changed
+    
+    if(lower_.empty()){
+      lower_.reserve(npar);
+      for(int i = 0; i< npar; i++)lower_[i] = R_NegInf;
+    }
+    
+    if(upper_.empty()){
+      upper_.reserve(npar);
+      for(int i = 0; i< npar; i++)upper_[i] = R_PosInf;
+    }
+    double max_par = *max_element(par.begin(),par.end());
+    if (!control.rhobeg) control.rhobeg = std::min(0.95, 0.2*max_par);
+    if (!control.rhoend) control.rhoend = 1.0e-6 * control.rhobeg;
+    
+    if (!control.maxfun) control.maxfun = 10000;
+    std::vector<double> w;
+    w.resize((control.npt + 5) * (control.npt + npar) + (3 * npar * (npar + 5))/2);
+    
+    int res = bobyqa(npar, control.npt, minqa_objfun, &func, par.data(), lower_.data(), upper_.data(),
+                     control.rhobeg, control.rhoend, control.iprint, control.maxfun, w.data());
+    Update_msg(res);
+    
+    par_ = par;
+    fval_ = func(par_);
+    feval_ = func.feval;
+  }
 };
-
-template <typename Derived>
-inline void Rbobyqa<Derived>::minimize(Derived &func, arma::vec &par) {
-  func.feval = 0;
-
-  std::size_t npar = par.size();
-  if (!control.npt) control.npt = std::min(npar + 2, (npar+2)*(npar+1)/2); //this caused an error for 1 or two parameters, changed
-
-  if (lower_.is_empty()) {
-    lower_ = arma::zeros<arma::vec>(npar);
-    lower_.for_each([](arma::mat::elem_type &val) { val = R_NegInf; });
-  }
-  if (upper_.is_empty()) {
-    upper_ = arma::zeros<arma::vec>(npar);
-    upper_.for_each([](arma::mat::elem_type &val) { val = R_PosInf; });
-  }
-  if (!control.rhobeg) control.rhobeg = std::min(0.95, 0.2 * par.max());
-  if (!control.rhoend) control.rhoend = 1.0e-6 * control.rhobeg;
-
-  if (!control.maxfun) control.maxfun = 10000;
-  std::vector<double> w;
-  w.resize((control.npt + 5) * (control.npt + npar) + (3 * npar * (npar + 5))/2);
-
-  int res = bobyqa(npar, control.npt, minqa_objfun, &func, par.memptr(), lower_.memptr(), upper_.memptr(),
-                   control.rhobeg, control.rhoend, control.iprint, control.maxfun, w.data());
-  Update_msg(res);
-
-  par_ = par;
-  fval_ = func(par_);
-  feval_ = func.feval;
-}
 
 }
 

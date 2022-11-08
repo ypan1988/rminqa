@@ -1,13 +1,11 @@
-#include "RcppArmadillo.h"
-
-#include "rbobyqa.h"
+#include "../inst/include/rbobyqa.h"
 using namespace rminqa;
 
 class Rosen : public Functor {
 public:
-  double operator()(const arma::vec &x) override {
-    double x1 = x(0);
-    double x2 = x(1);
+  double operator()(const std::vector<double> &x) override {
+    double x1 = x[0];
+    double x2 = x[1];
     return 100 * std::pow((x2 - x1 * x1), 2) + std::pow(1 - x1, 2);
   }
 };
@@ -34,11 +32,13 @@ void bobyqa_rosen_x1() {
   Rosen rb;
   Rbobyqa<Rosen> opt;
 
-  arma::vec x = {1, 2};
+  std::vector<double> x{1.0, 2.0};
   opt.minimize(rb, x);
 
   Rcpp::Rcout << "-------------------------" << std::endl;
-  Rcpp::Rcout << "par = \n" << opt.par() << std::endl;
+  Rcpp::Rcout << "par = ";
+  for(auto xi: opt.par())Rcpp::Rcout << xi << " ";
+  Rcpp::Rcout << "\n" << std::endl;
   Rcpp::Rcout << "fval = " << opt.fval() << std::endl;
   Rcpp::Rcout << "feval = " << opt.feval() << std::endl;
   Rcpp::Rcout << "msg = " << opt.msg() << std::endl;
@@ -71,11 +71,13 @@ void bobyqa_rosen_x1e() {
   opt.set_upper({4, 4});
   opt.control.maxfun = 50;
 
-  arma::vec x = {1, 2};
+  std::vector<double> x{1, 2};
   opt.minimize(rb, x);
 
   Rcpp::Rcout << "-------------------------" << std::endl;
-  Rcpp::Rcout << "par = \n" << opt.par() << std::endl;
+  Rcpp::Rcout << "par = ";
+  for(auto xi: opt.par())Rcpp::Rcout << xi << " ";
+  Rcpp::Rcout << "\n" << std::endl;
   Rcpp::Rcout << "fval = " << opt.fval() << std::endl;
   Rcpp::Rcout << "feval = " << opt.feval() << std::endl;
   Rcpp::Rcout << "msg = " << opt.msg() << std::endl;
