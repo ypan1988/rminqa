@@ -3,7 +3,7 @@
 
 #include <algorithm>
 #include <vector>
-#include<Rcpp.h>
+#include <Rcpp.h>
 
 #include "bobyqa.h"
 #include "functor.h"

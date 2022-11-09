@@ -94,7 +94,7 @@ typedef REAL bobyqa_objfun(const INTEGER n, const REAL* x, void* data);
    The array W will be used for working space.  Its length must be at least
    (NPT+5)*(NPT+N)+3*N*(N+5)/2.  Upon successful return, the first element of W
    will be set to the function value at the solution. */
-extern int bobyqa(const INTEGER n, const INTEGER npt,
+static int bobyqa(const INTEGER n, const INTEGER npt,
                   bobyqa_objfun* objfun, void* data,
                   REAL* x, const REAL* xl, const REAL* xu,
                   const REAL rhobeg, const REAL rhoend,
@@ -125,7 +125,7 @@ extern int bobyqa(const INTEGER n, const INTEGER npt,
    IPRINT=2 provides the current X and optimal F so far whenever RHO is
    reduced. The bound constraints of the problem require every component of
    X to be in the interval [-1,1]. */
-extern void bobyqa_test(void);
+// extern void bobyqa_test(void);
 
 /*---------------------------------------------------------------------------*/
 /* FORTRAN SUPPORT */

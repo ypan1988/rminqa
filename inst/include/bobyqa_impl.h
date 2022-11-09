@@ -152,99 +152,99 @@ update(const INTEGER n, const INTEGER npt, REAL* bmat,
 /*---------------------------------------------------------------------------*/
 /* TESTING */
 
-static REAL
-objfun_test(const INTEGER n, const REAL* x, void* data);
-
-#ifdef TESTING
-
-int
-main(int argc, char* argv[])
-{
-  bobyqa_test();
-  return 0;
-}
-
-#ifdef FORTRAN_NAME
-int
-FORTRAN_NAME(calfun,CALFUN)(const INTEGER* n, REAL* x, REAL* f)
-{
-  *f = objfun_test(*n, x, NULL);
-  return 0;
-}
-#endif /* FORTRAN_NAME */
-
-#endif
-
-void
-bobyqa_test(void)
-{
-  /* Constants. */
-  const REAL twopi = 2.0*M_PI;
-
-  /* Local variables. */
-  REAL bdl, bdu, rhobeg, rhoend, temp;
-  REAL w[500000], x[100], xl[100], xu[100];
-  INTEGER i, iprint, j, jcase, m, maxfun;
-
-  bdl = -1.0;
-  bdu =  1.0;
-  iprint = 2;
-  maxfun = 500000;
-  rhobeg = 0.1;
-  rhoend = 1e-6;
-  for (m = 5; m <= 10; m += m) {
-    REAL q = twopi/(REAL)m;
-    INTEGER n = 2*m;
-    LOOP(i,n) {
-      xl[i - 1] = bdl;
-      xu[i - 1] = bdu;
-    }
-    for (jcase = 1; jcase <= 2; ++jcase) {
-      INTEGER npt = n + 6;
-      if (jcase == 2) {
-        npt = 2*n + 1;
-      }
-      // fprintf(OUTPUT,
-      //         "\n\n     2D output with M =%4ld,  N =%4ld  and  NPT =%4ld\n",
-      //         (long)m, (long)n, (long)npt);
-      Rprintf("\n\n     2D output with M =%4ld,  N =%4ld  and  NPT =%4ld\n",
-              (long)m, (long)n, (long)npt);
-
-      LOOP(j,m) {
-        temp = ((REAL)j)*q;
-        x[2*j - 2] = COS(temp);
-        x[2*j - 1] = SIN(temp);
-      }
-      bobyqa(n, npt, objfun_test, NULL, x, xl, xu, rhobeg, rhoend,
-             iprint, maxfun, w);
-    }
-  }
-}
-
-static REAL
-objfun_test(const INTEGER n, const REAL* x, void* data)
-{
-  INTEGER i;
-  REAL f, temp, tempa, tempb;
-
-  f = 0.0;
-  for (i = 4; i <= n; i += 2) {
-    INTEGER j, j1 = i - 2;
-    for (j = 2; j <= j1; j += 2) {
-      tempa = x[i - 2] - x[j - 2];
-      tempb = x[i - 1] - x[j - 1];
-      temp = tempa*tempa + tempb*tempb;
-      temp = MAX(temp,1e-6);
-      f += 1.0/SQRT(temp);
-    }
-  }
-  return f;
-}
+// static REAL
+// objfun_test(const INTEGER n, const REAL* x, void* data);
+// 
+// #ifdef TESTING
+// 
+// int
+// main(int argc, char* argv[])
+// {
+//   bobyqa_test();
+//   return 0;
+// }
+// 
+// #ifdef FORTRAN_NAME
+// int
+// FORTRAN_NAME(calfun,CALFUN)(const INTEGER* n, REAL* x, REAL* f)
+// {
+//   *f = objfun_test(*n, x, NULL);
+//   return 0;
+// }
+// #endif /* FORTRAN_NAME */
+// 
+// #endif
+// 
+// extern void
+// bobyqa_test(void)
+// {
+//   /* Constants. */
+//   const REAL twopi = 2.0*M_PI;
+// 
+//   /* Local variables. */
+//   REAL bdl, bdu, rhobeg, rhoend, temp;
+//   REAL w[500000], x[100], xl[100], xu[100];
+//   INTEGER i, iprint, j, jcase, m, maxfun;
+// 
+//   bdl = -1.0;
+//   bdu =  1.0;
+//   iprint = 2;
+//   maxfun = 500000;
+//   rhobeg = 0.1;
+//   rhoend = 1e-6;
+//   for (m = 5; m <= 10; m += m) {
+//     REAL q = twopi/(REAL)m;
+//     INTEGER n = 2*m;
+//     LOOP(i,n) {
+//       xl[i - 1] = bdl;
+//       xu[i - 1] = bdu;
+//     }
+//     for (jcase = 1; jcase <= 2; ++jcase) {
+//       INTEGER npt = n + 6;
+//       if (jcase == 2) {
+//         npt = 2*n + 1;
+//       }
+//       // fprintf(OUTPUT,
+//       //         "\n\n     2D output with M =%4ld,  N =%4ld  and  NPT =%4ld\n",
+//       //         (long)m, (long)n, (long)npt);
+//       Rprintf("\n\n     2D output with M =%4ld,  N =%4ld  and  NPT =%4ld\n",
+//               (long)m, (long)n, (long)npt);
+// 
+//       LOOP(j,m) {
+//         temp = ((REAL)j)*q;
+//         x[2*j - 2] = COS(temp);
+//         x[2*j - 1] = SIN(temp);
+//       }
+//       bobyqa(n, npt, objfun_test, NULL, x, xl, xu, rhobeg, rhoend,
+//              iprint, maxfun, w);
+//     }
+//   }
+// }
+// 
+// static REAL
+// objfun_test(const INTEGER n, const REAL* x, void* data)
+// {
+//   INTEGER i;
+//   REAL f, temp, tempa, tempb;
+// 
+//   f = 0.0;
+//   for (i = 4; i <= n; i += 2) {
+//     INTEGER j, j1 = i - 2;
+//     for (j = 2; j <= j1; j += 2) {
+//       tempa = x[i - 2] - x[j - 2];
+//       tempb = x[i - 1] - x[j - 1];
+//       temp = tempa*tempa + tempb*tempb;
+//       temp = MAX(temp,1e-6);
+//       f += 1.0/SQRT(temp);
+//     }
+//   }
+//   return f;
+// }
 
 /*---------------------------------------------------------------------------*/
 /* BOBYQA DRIVER ROUTINES */
 
-int
+static int
 bobyqa(const INTEGER n, const INTEGER npt,
        bobyqa_objfun* objfun, void* data,
        REAL* x, const REAL* xl, const REAL* xu,
