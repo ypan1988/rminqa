@@ -10,18 +10,18 @@
 
 namespace rminqa {
 
-template<typename Derived>
+template<typename Derived, typename Partype>
 class Rbobyqa {
 public:
-  std::vector<double> lower() const { return lower_; }
-  std::vector<double> upper() const { return upper_; }
-  std::vector<double> par() const { return par_; }
+  Partype lower() const { return lower_; }
+  Partype upper() const { return upper_; }
+  Partype par() const { return par_; }
   double fval() const { return fval_; }
   int feval() const { return feval_; }
   std::string msg() const { return msg_; }
 private:
-  std::vector<double> lower_, upper_;
-  std::vector<double> par_;
+  Partype lower_, upper_;
+  Partype par_;
 
   double fval_;
   int feval_;
@@ -62,9 +62,10 @@ public:
 
   Rbobyqa() {}
 
-  void set_lower(const std::vector<double> &lower) { lower_ = lower; }
-  void set_upper(const std::vector<double> &upper) { upper_ = upper; }
-  void minimize(Derived &func, std::vector<double> &par) {
+  void set_lower(const Partype &lower) { lower_ = lower; }
+  void set_upper(const Partype &upper) { upper_ = upper; }
+  
+  void minimize(Derived &func, Partype &par) {
     func.feval = 0;
     
     std::size_t npar = par.size();
