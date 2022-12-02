@@ -1,9 +1,11 @@
 #include "../inst/include/rbobyqa.h"
 using namespace rminqa;
 
-class Rosen : public Functor {
+// Functor is class template so it can be used with arma::vec and Eigen::VectorXd if required
+// here we use std::vector
+class Rosen : public Functor<std::vector<double> > {
 public:
-  double operator()(const std::vector<double> &x) override {
+  double operator()(const std::vector<double> &x){
     double x1 = x[0];
     double x2 = x[1];
     return 100 * std::pow((x2 - x1 * x1), 2) + std::pow(1 - x1, 2);
@@ -30,7 +32,7 @@ public:
 // [[Rcpp::export]]
 void bobyqa_rosen_x1() {
   Rosen rb;
-  Rbobyqa<Rosen> opt;
+  Rbobyqa<Rosen,std::vector<double> > opt;
 
   std::vector<double> x{1.0, 2.0};
   opt.minimize(rb, x);
@@ -66,7 +68,7 @@ void bobyqa_rosen_x1() {
 // [[Rcpp::export]]
 void bobyqa_rosen_x1e() {
   Rosen rb;
-  Rbobyqa<Rosen> opt;
+  Rbobyqa<Rosen,std::vector<double>> opt;
   opt.set_lower({0, 0});
   opt.set_upper({4, 4});
   opt.control.maxfun = 50;
