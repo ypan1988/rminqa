@@ -1,8 +1,8 @@
 Package: rminqa
 Type: Package
 Title: Derivative-Free Optimization in R using C++
-Version: 0.2.1
-Date: 2022-11-08
+Version: 0.2.2
+Date: 2025-12-07
 Authors@R: c(person("Sam", "Watson", email = "S.I.Watson@bham.ac.uk",
                   role = c("aut")),
             person("Yi", "Pan", email = "ypan1988@gmail.com",
@@ -15,7 +15,6 @@ Description: Perform derivative-free optimization algorithms in R using C++.
     (See <https://github.com/emmt/Algorithms/tree/master/bobyqa>).
 License: GPL (>= 2)
 Encoding: UTF-8
-SystemRequirements: C++11
 Imports: Rcpp (>= 1.0.7)
 LinkingTo: Rcpp
 RoxygenNote: 7.1.2
